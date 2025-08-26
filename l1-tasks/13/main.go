@@ -3,16 +3,12 @@ package main
 import "fmt"
 
 func main() {
-	words := []string{"cat", "cat", "dog", "cat", "tree"}
-	m := make(map[string]bool)
-	for _, v := range words {
-		m[v] = true
-	}
+	a, b := 1, 2
 
-	uniqueWords := make([]string, 0, len(m))
-	for k, _ := range m {
-		uniqueWords = append(uniqueWords, k)
-	}
+	// работает засчет обратимости XOR (a ^ b ^ a = b)
+	a = a ^ b
+	b = a ^ b
+	a = a ^ b
 
-	fmt.Printf("Uniques: %v\n", uniqueWords)
+	fmt.Println(a, b)
 }
