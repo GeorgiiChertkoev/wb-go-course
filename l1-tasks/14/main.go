@@ -2,17 +2,29 @@ package main
 
 import "fmt"
 
+func PrintType(v interface{}) {
+	switch v.(type) {
+	case int:
+		fmt.Printf("got int\n")
+	case string:
+		fmt.Printf("got string\n")
+	case bool:
+		fmt.Printf("got bool\n")
+	case chan interface{}:
+		fmt.Printf("got chan interface\n")
+	default:
+		fmt.Printf("Was not ready for type: %T", v)
+	}
+}
+
 func main() {
-	words := []string{"cat", "cat", "dog", "cat", "tree"}
-	m := make(map[string]bool)
-	for _, v := range words {
-		m[v] = true
-	}
-
-	uniqueWords := make([]string, 0, len(m))
-	for k, _ := range m {
-		uniqueWords = append(uniqueWords, k)
-	}
-
-	fmt.Printf("Uniques: %v\n", uniqueWords)
+	var a any
+	a = false
+	PrintType(a)
+	a = 1
+	PrintType(a)
+	a = string("qwerty")
+	PrintType(a)
+	a = make(chan any)
+	PrintType(a)
 }
