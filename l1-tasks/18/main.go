@@ -1,18 +1,34 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+	"sync/atomic"
+)
+
+type ConcurrentCounter struct {
+	Counter atomic.Int64
+}
+
+func (c *ConcurrentCounter) Intcrement() {
+	c.Counter.Add(1)
+}
+
+var c ConcurrentCounter
 
 func main() {
-	words := []string{"cat", "cat", "dog", "cat", "tree"}
-	m := make(map[string]bool)
-	for _, v := range words {
-		m[v] = true
+	var wg sync.WaitGroup
+	wg.Add(10)
+	for _ = range 10 {
+		go func() {
+			defer wg.Done()
+			for _ = range 10 {
+				c.Intcrement()
+			}
+		}()
 	}
 
-	uniqueWords := make([]string, 0, len(m))
-	for k, _ := range m {
-		uniqueWords = append(uniqueWords, k)
-	}
+	wg.Wait()
 
-	fmt.Printf("Uniques: %v\n", uniqueWords)
+	fmt.Printf("%v\n", c.Counter.Load())
 }
