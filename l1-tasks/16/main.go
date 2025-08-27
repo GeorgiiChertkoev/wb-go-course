@@ -14,9 +14,9 @@ func partition(nums []int, l int, r int) int {
 		if l >= r {
 			break
 		}
+		nums[l], nums[r] = nums[r], nums[l]
 		l++
 		r--
-		nums[l], nums[r] = nums[r], nums[l]
 	}
 	return r
 }
