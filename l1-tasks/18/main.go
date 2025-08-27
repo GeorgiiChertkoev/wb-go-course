@@ -17,6 +17,8 @@ func (c *ConcurrentCounter) Intcrement() {
 var c ConcurrentCounter
 
 func main() {
+	defer fmt.Printf("%v\n", c.Counter.Load())
+
 	var wg sync.WaitGroup
 	wg.Add(10)
 	for _ = range 10 {
@@ -30,5 +32,4 @@ func main() {
 
 	wg.Wait()
 
-	fmt.Printf("%v\n", c.Counter.Load())
 }
