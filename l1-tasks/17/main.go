@@ -1,18 +1,30 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"slices"
+)
+
+func BinarySearch(nums []int, v int) int {
+	l, r := 0, len(nums)
+	for l < r {
+		m := (l + r) / 2
+		if nums[m] > v {
+			r = m
+		}
+		if nums[m] < v {
+			l = m
+		}
+		if nums[m] == v {
+			return m
+		}
+	}
+	return -1
+}
 
 func main() {
-	words := []string{"cat", "cat", "dog", "cat", "tree"}
-	m := make(map[string]bool)
-	for _, v := range words {
-		m[v] = true
-	}
+	nums := []int{1, 2, 4, 5, 7, 8, 11, 34, 124}
+	slices.Sort(nums)
 
-	uniqueWords := make([]string, 0, len(m))
-	for k, _ := range m {
-		uniqueWords = append(uniqueWords, k)
-	}
-
-	fmt.Printf("Uniques: %v\n", uniqueWords)
+	fmt.Printf("%d on pos %d in %v\n", 34, BinarySearch(nums, 34), nums)
 }
