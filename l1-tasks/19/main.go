@@ -2,17 +2,16 @@ package main
 
 import "fmt"
 
+func Reverse(s string) string {
+	letters := []rune(s)
+
+	for i := 0; i < len(letters)/2; i++ {
+		letters[i], letters[len(letters)-i-1] = letters[len(letters)-i-1], letters[i]
+	}
+	return string(letters)
+}
+
 func main() {
-	words := []string{"cat", "cat", "dog", "cat", "tree"}
-	m := make(map[string]bool)
-	for _, v := range words {
-		m[v] = true
-	}
-
-	uniqueWords := make([]string, 0, len(m))
-	for k, _ := range m {
-		uniqueWords = append(uniqueWords, k)
-	}
-
-	fmt.Printf("Uniques: %v\n", uniqueWords)
+	s := string("привет")
+	fmt.Printf("was: %s\ngot: %s\n", s, Reverse(s))
 }
