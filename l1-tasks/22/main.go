@@ -1,18 +1,18 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math/big"
+)
+
+func DoMath(a, b *big.Int) {
+	var z big.Int
+	fmt.Printf("a+b: %s\n", z.Add(a, b))
+	fmt.Printf("a-b: %s\n", z.Sub(a, b))
+	fmt.Printf("a*b: %s\n", z.Mul(a, b))
+	fmt.Printf("a/b: %s\n", z.Div(a, b))
+}
 
 func main() {
-	words := []string{"cat", "cat", "dog", "cat", "tree"}
-	m := make(map[string]bool)
-	for _, v := range words {
-		m[v] = true
-	}
-
-	uniqueWords := make([]string, 0, len(m))
-	for k, _ := range m {
-		uniqueWords = append(uniqueWords, k)
-	}
-
-	fmt.Printf("Uniques: %v\n", uniqueWords)
+	DoMath(big.NewInt(1<<50), big.NewInt(1<<40))
 }
