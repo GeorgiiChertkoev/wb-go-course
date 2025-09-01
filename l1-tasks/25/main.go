@@ -1,18 +1,36 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+func sleepUsingFor(d time.Duration) {
+	startTime := time.Now()
+
+	for time.Since(startTime) < d {
+	}
+}
+
+func sleepUsingChan(d time.Duration) {
+	<-time.After(d)
+}
 
 func main() {
-	words := []string{"cat", "cat", "dog", "cat", "tree"}
-	m := make(map[string]bool)
-	for _, v := range words {
-		m[v] = true
-	}
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		sleepUsingFor(3 * time.Second)
+		fmt.Println("awake after using for")
+	}()
 
-	uniqueWords := make([]string, 0, len(m))
-	for k, _ := range m {
-		uniqueWords = append(uniqueWords, k)
-	}
+	go func() {
+		defer wg.Done()
+		sleepUsingChan(3 * time.Second)
+		fmt.Println("awake after using chan")
+	}()
 
-	fmt.Printf("Uniques: %v\n", uniqueWords)
+	wg.Wait()
 }
