@@ -5,7 +5,7 @@ import (
 	"unicode"
 )
 
-func HasDuplicates(s string) bool {
+func AllUnique(s string) bool {
 	// если предположить что строка не содержит рун или у нас совсем небольшой набор возможных символов
 	// то можно было бы просто создать массив на кол-во букв и тогда проверка и добавление было бы
 	// за настоящую О(1) а не амортизированную
@@ -15,17 +15,17 @@ func HasDuplicates(s string) bool {
 	for _, letter := range s {
 		letter = unicode.ToLower(letter) // чтобы не различать буквы в разных регистрах
 		if _, ok := m[letter]; ok {
-			return true
+			return false
 		}
 		m[letter] = struct{}{}
 	}
-	return false
+	return true
 }
 
 func main() {
-	fmt.Printf("HasDuplicates('abcd'):	       %t\n", HasDuplicates("abcd"))
-	fmt.Printf("HasDuplicates('abCdefAaf'):    %t\n", HasDuplicates("abCdefAaf"))
-	fmt.Printf("HasDuplicates('AbCd Норм'):    %t\n", HasDuplicates("AbCd Норм"))
-	fmt.Printf("HasDuplicates('aabcd'):        %t\n", HasDuplicates("aabcd"))
-	fmt.Printf("HasDuplicates('Привет Tебе'):  %t\n", HasDuplicates("Привет тебе"))
+	fmt.Printf("AllUnique('abcd'):         %t\n", AllUnique("abcd"))
+	fmt.Printf("AllUnique('abCdefAaf'):    %t\n", AllUnique("abCdefAaf"))
+	fmt.Printf("AllUnique('AbCd Норм'):    %t\n", AllUnique("AbCd Норм"))
+	fmt.Printf("AllUnique('aabcd'):        %t\n", AllUnique("aabcd"))
+	fmt.Printf("AllUnique('Привет Tебе'):  %t\n", AllUnique("Привет тебе"))
 }
