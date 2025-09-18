@@ -15,7 +15,7 @@ type SortOptions struct {
 	IgnoreBlanks bool
 	CheckSorted  bool
 	HumanNumeric bool
-	Separator    string
+	Separators   string
 }
 
 func (opts SortOptions) Print() {
@@ -27,7 +27,7 @@ func (opts SortOptions) Print() {
 	fmt.Printf("IgnoreBlanks: %v\n", opts.IgnoreBlanks)
 	fmt.Printf("CheckSorted: %v\n", opts.CheckSorted)
 	fmt.Printf("HumanNumeric: %v\n", opts.HumanNumeric)
-	fmt.Printf("Separetor: %q\n", opts.Separator)
+	fmt.Printf("Separetor: %q\n", opts.Separators)
 }
 
 func ParseArgs() SortOptions {
@@ -43,7 +43,7 @@ func ParseArgs() SortOptions {
 	pflag.BoolVarP(&opts.HumanNumeric, "human-numeric-sort", "h", false, "сортировка с учётом суффиксов (K, M, G)")
 
 	// доп фичи
-	pflag.StringVarP(&opts.Separator, "separator", "t", "\t", "разделитель для -k")
+	pflag.StringVarP(&opts.Separators, "separators", "t", "\t", "разделители для -k")
 
 	// возможные фичи
 	// ‘-S size’ ‘--buffer-size=size’
