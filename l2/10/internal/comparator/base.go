@@ -34,8 +34,8 @@ func numeric(a, b string) bool {
 func month(a, b string) bool {
 	months := []string{"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"}
 
-	a = strings.TrimLeft(a, " \t")
-	b = strings.TrimLeft(b, " \t")
+	a = strings.ToUpper(strings.TrimLeft(a, " \t"))
+	b = strings.ToUpper(strings.TrimLeft(b, " \t"))
 
 	var v1, v2 int
 	v1, v2 = -1, -1
@@ -91,5 +91,4 @@ func humanNumeric(a, b string) bool {
 		return a[:len(a)-1]
 	}
 	return numeric(removeScale(a, aScale), removeScale(b, bScale))
-
 }
