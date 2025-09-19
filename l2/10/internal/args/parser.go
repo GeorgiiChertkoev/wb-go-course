@@ -16,6 +16,7 @@ type SortOptions struct {
 	CheckSorted  bool
 	HumanNumeric bool
 	Separators   string
+	Files        []string
 }
 
 func (opts SortOptions) Print() {
@@ -51,6 +52,8 @@ func ParseArgs() SortOptions {
 	// ‘--parallel=n’
 
 	pflag.Parse()
+
+	opts.Files = pflag.Args()
 
 	return opts
 }
