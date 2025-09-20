@@ -1,4 +1,35 @@
 package writer
 
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
 // пишет выходные данные
-// NOTE: возможно лишний пакет т.к. печать простая и может выполнятся и в main
+type Writer struct {
+	OutputFile string
+}
+
+func (w *Writer) WriteStrings(ch <-chan string) {
+	var out *os.File
+	var err error
+
+	if w.OutputFile == "" {
+		out = os.Stdout
+	} else {
+		out, err = os.Create(w.OutputFile)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "cannot create output file %s: %v", w.OutputFile, err)
+		}
+		defer out.Close()
+	}
+
+	bw := bufio.NewWriter(out)
+	defer bw.Flush()
+
+	for s := range ch {
+		bw.WriteString(s)
+		bw.WriteByte('\n')
+	}
+}

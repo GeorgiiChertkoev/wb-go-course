@@ -16,6 +16,9 @@ type SortOptions struct {
 	CheckSorted  bool
 	HumanNumeric bool
 	Separators   string
+	BufSize      int64  // size of buffer for reading in bytes
+	TempDir      string // dir for temp files
+	OutputFile   string
 	Files        []string
 }
 
@@ -44,11 +47,11 @@ func ParseArgs() SortOptions {
 	pflag.BoolVarP(&opts.HumanNumeric, "human-numeric-sort", "h", false, "сортировка с учётом суффиксов (K, M, G)")
 
 	// доп фичи
-	pflag.StringVarP(&opts.Separators, "separators", "t", "\t", "разделители для -k")
+	pflag.StringVarP(&opts.Separators, "field-separator", "t", "\t", "разделители для -k")
+	pflag.StringVarP(&opts.TempDir, "temporary-directory", "T", "tmp", "директория для хранения временных файлов")
+	pflag.StringVarP(&opts.OutputFile, "output", "o", "", "файл в который пишутся отсортированные строки")
+	pflag.Int64VarP(&opts.BufSize, "buffer-size", "S", 256*1024*1024, "размер буффера при считывании данных") // 256 мб по умолчанию
 
-	// возможные фичи
-	// ‘-S size’ ‘--buffer-size=size’
-	// ‘-T tempdir’ ‘--temporary-directory=tempdir’
 	// ‘--parallel=n’
 
 	pflag.Parse()

@@ -2,21 +2,13 @@ package main
 
 import (
 	"fmt"
-	"strings"
 	"unix-sort/internal/args"
-
-	"github.com/spf13/pflag"
+	"unix-sort/internal/sorter"
 )
 
 func main() {
-	opts := args.ParseArgs()
-	opts.Print()
-
-	files := pflag.Args()
-	if len(files) == 0 {
-		fmt.Println("Читаем из stdin")
-	} else {
-		fmt.Printf("Файлы: %s\n", strings.Join(files, ", "))
+	err := sorter.Sort(args.ParseArgs())
+	if err != nil {
+		fmt.Println(err)
 	}
-
 }
