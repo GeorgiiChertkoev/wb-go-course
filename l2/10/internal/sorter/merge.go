@@ -30,12 +30,14 @@ func (h *minHeap) Pop() any {
 }
 
 // mergeFiles открывает все временные файлы, делает k-way merge и отправляет результат в канал
-func mergeFiles(files []string, out chan<- string) {
+func mergeFiles(files []string, out chan<- string, comparer func(a, b string) bool) {
 	defer close(out)
 
 	// открыть все файлы
 	scanners := make([]*bufio.Scanner, 0, len(files))
-	h := &minHeap{}
+	h := &minHeap{
+		comparer: comparer,
+	}
 	heap.Init(h)
 
 	for i, fpath := range files {
@@ -45,7 +47,7 @@ func mergeFiles(files []string, out chan<- string) {
 		}
 		defer f.Close()
 
-		scanner := bufio.NewScanner(f) // possible feature: add bigger buffer for optimization?
+		scanner := bufio.NewScanner(f)
 		scanners = append(scanners, scanner)
 		if scanner.Scan() {
 			heap.Push(h, fileEntry{

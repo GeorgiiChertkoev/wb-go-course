@@ -8,12 +8,14 @@ import (
 
 // пишет выходные данные
 type Writer struct {
-	OutputFile string
+	OutputFile  string
+	OnlyUniques bool
 }
 
 func (w *Writer) WriteStrings(ch <-chan string) {
 	var out *os.File
 	var err error
+	var prev string
 
 	if w.OutputFile == "" {
 		out = os.Stdout
@@ -29,7 +31,11 @@ func (w *Writer) WriteStrings(ch <-chan string) {
 	defer bw.Flush()
 
 	for s := range ch {
+		if w.OnlyUniques && prev == s {
+			continue
+		}
 		bw.WriteString(s)
 		bw.WriteByte('\n')
+		prev = s
 	}
 }
