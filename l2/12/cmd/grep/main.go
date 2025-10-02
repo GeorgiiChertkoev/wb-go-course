@@ -18,9 +18,6 @@ func main() {
 	results, _ := grep.Grep(*opts)
 	fmt.Printf("files: %d\n", len(results))
 	for _, greppedFile := range results {
-		for _ = range greppedFile.Groups {
-			greppedFile.Print(os.Stdout, "--")
-		}
-
+		greppedFile.Print(os.Stdout, "--")
 	}
 }

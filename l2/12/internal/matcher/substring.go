@@ -11,5 +11,5 @@ func NewSubstringMatcher(s string) *SubstringMatcher {
 }
 
 func (matcher *SubstringMatcher) Match(s string) bool {
-	return strings.ContainsAny(s, matcher.substr)
+	return strings.Contains(s, matcher.substr)
 }

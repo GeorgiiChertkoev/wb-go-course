@@ -1,6 +1,7 @@
 package grep
 
 import (
+	"fmt"
 	"go-grep/internal/matcher"
 	"go-grep/internal/options"
 	"os"
@@ -27,6 +28,7 @@ func Grep(opts options.GrepOptions) ([]*FileGrepResult, error) {
 	}
 	result := make([]*FileGrepResult, 0, len(opts.Files))
 	for _, filename := range opts.Files {
+		fmt.Printf("\n\ngonna grep %s\n\n", filename)
 		grepRes, err := grepper.grepFile(filename)
 		if err != nil {
 			return nil, err
