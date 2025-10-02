@@ -50,7 +50,7 @@ func TestInvertMatch(t *testing.T) {
 }
 
 func TestCountOnly(t *testing.T) {
-	output := strings.TrimSpace(runGrep(t, []string{"-c", "John", "us_presidents.txt"}))
+	output := strings.TrimSpace(runGrep(t, []string{"-c", "John ", "us_presidents.txt"}))
 	if output != "4" {
 		t.Errorf("expected count=4, got: %q", output)
 	}

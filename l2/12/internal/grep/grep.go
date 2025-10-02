@@ -4,6 +4,7 @@ import (
 	"go-grep/internal/matcher"
 	"go-grep/internal/options"
 	"os"
+	"strconv"
 )
 
 type grepper struct {
@@ -30,6 +31,17 @@ func Grep(opts options.GrepOptions) ([]*FileGrepResult, error) {
 		grepRes, err := grepper.grepFile(filename)
 		if err != nil {
 			return nil, err
+		}
+		if opts.CountOnly {
+			size := 0
+			for i := range grepRes.Groups {
+				size += len(grepRes.Groups[i].Lines)
+			}
+			grepRes = &FileGrepResult{
+				Groups: []GreppedGroup{
+					{Lines: []string{strconv.Itoa(size)}},
+				},
+			}
 		}
 		result = append(result, grepRes)
 	}
