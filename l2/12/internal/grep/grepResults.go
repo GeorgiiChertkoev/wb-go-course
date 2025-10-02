@@ -13,7 +13,8 @@ type GreppedGroup struct {
 }
 
 type FileGrepResult struct {
-	Groups []GreppedGroup
+	Groups         []GreppedGroup
+	groupDelimeter string
 }
 
 func (gg *GreppedGroup) Print(writer io.Writer) {
@@ -22,11 +23,11 @@ func (gg *GreppedGroup) Print(writer io.Writer) {
 	}
 }
 
-func (fg *FileGrepResult) Print(writer io.Writer, groupDelimeter string) {
+func (fg *FileGrepResult) Print(writer io.Writer) {
 	for i := range fg.Groups {
 		fg.Groups[i].Print(writer)
-		if i != len(fg.Groups)-1 {
-			fmt.Fprintln(writer, groupDelimeter)
+		if i != len(fg.Groups)-1 && fg.groupDelimeter != "" {
+			fmt.Fprintln(writer, fg.groupDelimeter)
 		}
 	}
 }

@@ -12,12 +12,18 @@ func main() {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to parse command line arguments: %v\n", err)
 		fmt.Fprintf(os.Stderr, "See --help for help\n")
-		os.Exit(1)
 		return
 	}
-	results, _ := grep.Grep(*opts)
+	results, err := grep.Grep(*opts)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error while grepping: %v", err)
+		return
+	}
 	fmt.Printf("files: %d\n", len(results))
-	for _, greppedFile := range results {
-		greppedFile.Print(os.Stdout, "--")
+	for i, greppedFile := range results {
+		if len(results) > 1 {
+			fmt.Printf("File: %s\n", opts.Files[i])
+		}
+		greppedFile.Print(os.Stdout)
 	}
 }

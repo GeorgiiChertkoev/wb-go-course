@@ -29,9 +29,9 @@ func ParseArgs(args []string) (*GrepOptions, error) {
 	fs.BoolVarP(&opts.IgnoreCase, "i", "i", false, "ignore case when matching")
 	fs.BoolVarP(&opts.Fixed, "F", "F", false, "interpret pattern as string not as regex")
 	fs.BoolVarP(&opts.LineNum, "n", "n", false, "print number of line")
+	fs.BoolVarP(&opts.Invert, "v", "v", false, "invert seatch")
 
 	fs.Parse(args)
-	fmt.Println("Unparsed: ", fs.Args())
 	if len(fs.Args()) == 0 {
 		return nil, fmt.Errorf("missing pattern for matching")
 	}

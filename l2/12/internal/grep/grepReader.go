@@ -10,7 +10,7 @@ import (
 
 func (g *grepper) grepReader(reader io.Reader) (*FileGrepResult, error) {
 	scanner := bufio.NewScanner(reader)
-	lineNum := 0
+	lineNum := 1
 	var groups []GreppedGroup
 	var curGroup GreppedGroup
 	var line string
@@ -46,8 +46,15 @@ func (g *grepper) grepReader(reader io.Reader) (*FileGrepResult, error) {
 	if len(curGroup.Lines) != 0 {
 		groups = append(groups, curGroup)
 	}
+
+	groupDelimeter := ""
+	if g.opts.LineNum {
+		groupDelimeter = "--"
+	}
+
 	return &FileGrepResult{
-		Groups: groups,
+		Groups:         groups,
+		groupDelimeter: groupDelimeter,
 	}, nil
 }
 
