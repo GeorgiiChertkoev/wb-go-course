@@ -14,6 +14,28 @@ func Or(channels ...<-chan interface{}) <-chan interface{} {
 	return res
 }
 
+func OrBySelect(channels ...<-chan interface{}) <-chan interface{} {
+	res := make(chan interface{})
+
+	go func() {
+		for {
+			for _, c := range channels {
+				select {
+				case v, ok := <-c:
+					if !ok {
+						close(res)
+						return
+					}
+					res <- v
+				default:
+				}
+			}
+		}
+	}()
+
+	return res
+}
+
 func orTwoChannels(ch1, ch2 <-chan interface{}) <-chan interface{} {
 	res := make(chan interface{})
 	go func() {

@@ -6,7 +6,8 @@ import (
 	"time"
 )
 
-func TestOrChannels(t *testing.T) {
+func OrChannels(t *testing.T, orFunc func(channels ...<-chan interface{}) <-chan interface{}) {
+	t.Helper()
 	sig := func(after time.Duration) <-chan interface{} {
 		c := make(chan interface{})
 		go func() {
@@ -17,7 +18,7 @@ func TestOrChannels(t *testing.T) {
 	}
 
 	start := time.Now()
-	<-Or(
+	<-orFunc(
 		sig(2*time.Hour),
 		sig(5*time.Minute),
 		sig(1*time.Second),
@@ -29,4 +30,12 @@ func TestOrChannels(t *testing.T) {
 		t.Errorf("channel took too long, expected ~1sec got: %v sec", time.Since(start).Seconds())
 	}
 	fmt.Printf("done after %v", time.Since(start))
+}
+
+func TestOrByTwoChans(t *testing.T) {
+	OrChannels(t, Or)
+}
+
+func TestOrBySelect(t *testing.T) {
+	OrChannels(t, OrBySelect)
 }
