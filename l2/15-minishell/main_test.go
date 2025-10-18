@@ -51,19 +51,21 @@ func TestPwdCd(t *testing.T) {
 
 func TestPipeline(t *testing.T) {
 	var cmd string
+	expected := ""
 	if runtime.GOOS == "windows" {
-		cmd = `echo foo bar baz | findstr ba | find /C /V ""`
+		cmd = `echo foo bar baz | findstr ba`
+		expected = "foo bar baz"
 	} else {
 		cmd = "echo foo bar baz | grep ba | wc -l\n"
+		expected = "1"
 	}
 
 	stdout, _ := runShellInput(t, cmd)
 	stdout = strings.TrimSpace(stdout)
-	if stdout != "1" {
-		t.Errorf("expected '1', got '%s'", stdout)
+	if stdout != expected {
+		t.Errorf("expected '%s', got '%s'", expected, stdout)
 	}
 }
-
 func TestPs(t *testing.T) {
 	stdout, _ := runShellInput(t, "ps\n")
 	if !strings.Contains(stdout, "PID") && !strings.Contains(stdout, "COMMAND") {

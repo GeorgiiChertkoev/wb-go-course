@@ -101,6 +101,8 @@ func (s *Shell) consumeCommands() {
 		}()
 		err := s.execute(ctx, cmd)
 		if err != nil {
+
+			fmt.Fprintf(os.Stderr, "failed to execute %s with err: %v\n", cmd, err)
 			fmt.Fprintf(s.Stderr, "failed to execute %s with err: %v\n", cmd, err)
 		}
 		cancel()
@@ -132,9 +134,9 @@ func (s *Shell) execute(ctx context.Context, commandLine string) (err error) {
 		}
 	}
 
-	for _, cmd := range cmds {
+	for i, cmd := range cmds {
 		if err = cmd.Wait(); err != nil {
-			return err
+			return fmt.Errorf("error executing %s: %v", commands[i], err)
 		}
 	}
 	return nil
