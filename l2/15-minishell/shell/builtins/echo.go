@@ -3,6 +3,7 @@ package builtins
 import (
 	"context"
 	"fmt"
+	"strings"
 )
 
 type Echo struct {
@@ -24,9 +25,7 @@ func NewEcho(ctx context.Context, args ...string) *Echo {
 func (cd *Echo) Start() error {
 	go func() {
 		defer cd.doneFunc()
-		for _, arg := range cd.args {
-			fmt.Fprintln(cd.stdout, arg) // behaves similar to windows
-		}
+		fmt.Fprintln(cd.stdout, strings.Join(cd.args, " "))
 	}()
 
 	return nil

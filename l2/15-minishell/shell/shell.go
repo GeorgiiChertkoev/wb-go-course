@@ -19,6 +19,9 @@ const commandsBufferSize = 128
 type Shell struct {
 	Ctx            context.Context
 	Dir            string
+	Stdin          io.Reader
+	Stdout         io.Writer
+	Stderr         io.Writer
 	commands       chan string
 	cancelCommand  chan os.Signal
 	shellCtxCancel context.CancelFunc
@@ -29,6 +32,9 @@ func NewShell(Dir string) *Shell {
 	return &Shell{
 		Ctx:            ctx,
 		Dir:            Dir,
+		Stdin:          os.Stdin,
+		Stdout:         os.Stdout,
+		Stderr:         os.Stderr,
 		shellCtxCancel: shellCtxCancel,
 	}
 }
@@ -58,10 +64,10 @@ func (s *Shell) Start() {
 			return
 		default:
 		}
-		scanner := bufio.NewScanner(os.Stdin)
+		scanner := bufio.NewScanner(s.Stdin)
 		for scanner.Scan() {
 			cmd := scanner.Text()
-			if strings.ContainsAny(cmd, exitCharacters) {
+			if strings.ContainsAny(cmd, exitCharacters) || strings.TrimSpace(cmd) == "exit" { // extra way to exit
 				s.shellCtxCancel()
 				return
 			}
@@ -95,7 +101,7 @@ func (s *Shell) consumeCommands() {
 		}()
 		err := s.execute(ctx, cmd)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "failed to execute %s with err: %v\n", cmd, err)
+			fmt.Fprintf(s.Stderr, "failed to execute %s with err: %v\n", cmd, err)
 		}
 		cancel()
 	}
@@ -106,7 +112,7 @@ func (s *Shell) execute(ctx context.Context, commandLine string) (err error) {
 	commands := strings.Split(commandLine, "|")
 
 	cmds := make([]Command, 0)
-	var prevStdout io.ReadCloser = os.Stdin
+	var prevStdout io.Reader = s.Stdin
 	for i, command := range commands {
 		cmd := s.createCmd(ctx, command, prevStdout)
 		cmds = append(cmds, cmd)
@@ -117,7 +123,7 @@ func (s *Shell) execute(ctx context.Context, commandLine string) (err error) {
 			return err
 		}
 	}
-	cmds[len(cmds)-1].SetStdout(os.Stdout)
+	cmds[len(cmds)-1].SetStdout(s.Stdout)
 
 	for _, cmd := range cmds {
 		cmd.SetDir(s.Dir)
@@ -131,7 +137,6 @@ func (s *Shell) execute(ctx context.Context, commandLine string) (err error) {
 			return err
 		}
 	}
-
 	return nil
 }
 
@@ -158,7 +163,9 @@ func (s *Shell) createCmd(ctx context.Context, command string, stdin io.Reader) 
 	cmd := exec.CommandContext(ctx, fields[0], fields[1:]...)
 	cmd.Stdin = stdin
 
-	cmd.Stderr = os.Stderr
+	// needed because all piped commands print in same
+	// io.Writer causing data race
+	cmd.Stderr = &syncWriter{w: s.Stderr}
 
 	return &cmdWrapper{
 		Cmd: cmd,
